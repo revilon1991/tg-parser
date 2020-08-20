@@ -1,0 +1,21 @@
+version: '3.7'
+
+volumes:
+    app_volume:
+        name: ${PROJECT_NAME}_app_volume
+        driver: local
+        driver_opts:
+            type: nfs
+            o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+            device: ":${PWD}"
+
+services:
+    go:
+        container_name: ${PROJECT_NAME}_go
+        image: go_image
+        build: ./go
+        tty: true
+        ports:
+            - 8080:8080
+        volumes:
+            - app_volume:/app
