@@ -19,6 +19,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"runtime"
 	"strconv"
 	"syscall"
 	"time"
@@ -69,6 +70,8 @@ func newClient() *ClientStorage {
 		Client:   C.td_json_client_create(),
 		Updates:  make(chan Update, 100),
 		botToken: botToken,
+		Version:  Version,
+		CommitID: CommitID,
 	}
 
 	go func() {
@@ -142,9 +145,9 @@ func (clientStorage *ClientStorage) Auth(authorizationState string) (Update, err
 				ApiId:                  appId,
 				ApiHash:                appHash,
 				SystemLanguageCode:     "ru",
-				DeviceModel:            "Server",
-				SystemVersion:          "1.0.0",
-				ApplicationVersion:     "1.0.0",
+				DeviceModel:            runtime.GOOS,
+				SystemVersion:          runtime.Version(),
+				ApplicationVersion:     Version,
 				EnableStorageOptimizer: true,
 				IgnoreFileNames:        true,
 			},

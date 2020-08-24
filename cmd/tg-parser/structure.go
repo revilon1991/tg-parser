@@ -10,6 +10,8 @@ type ClientStorage struct {
 	Updates  chan Update
 	botToken string
 	waiters  sync.Map
+	Version  string
+	CommitID string
 }
 
 type Update = map[string]interface{}

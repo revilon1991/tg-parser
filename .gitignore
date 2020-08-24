@@ -2,3 +2,5 @@
 /var/*
 !/var/.gitkeep
 .env
+vendor/
+tg-parser*

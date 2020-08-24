@@ -24,6 +24,11 @@ import (
 	"unsafe"
 )
 
+var (
+	Version  = "0"
+	CommitID = "0"
+)
+
 func main() {
 	_ = godotenv.Load()
 
