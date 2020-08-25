@@ -79,7 +79,7 @@ func newClient() *ClientStorage {
 			// get update
 			result := C.td_json_client_receive(clientStorage.Client, C.double(10))
 			var update map[string]interface{}
-			json.Unmarshal([]byte(C.GoString(result)), &update)
+			_ = json.Unmarshal([]byte(C.GoString(result)), &update)
 			// does new update has @extra field?
 			if extra, hasExtra := update["@extra"].(string); hasExtra {
 				// trying to load update with this salt
@@ -177,7 +177,7 @@ func (clientStorage *ClientStorage) Auth(authorizationState string) (Update, err
 
 		fmt.Print("Enter phone: ")
 		var number string
-		fmt.Scanln(&number)
+		_, _ = fmt.Scanln(&number)
 
 		res, err := clientStorage.SendAndCatch(Update{
 			"@type":        "setAuthenticationPhoneNumber",
@@ -190,7 +190,7 @@ func (clientStorage *ClientStorage) Auth(authorizationState string) (Update, err
 	case "authorizationStateWaitCode":
 		fmt.Print("Enter code: ")
 		var code string
-		fmt.Scanln(&code)
+		_, _ = fmt.Scanln(&code)
 
 		res, err := clientStorage.SendAndCatch(Update{
 			"@type": "checkAuthenticationCode",

@@ -6,7 +6,7 @@ Contains docker build, web server and REST api interface for call C functions of
 Download latest [release](https://github.com/revilon1991/tg-parser/releases) for your OS
 
 Create [Telegram Application](https://core.telegram.org/api/obtaining_api_id) and get
-`TELEGRAM_APP_ID` `TELEGRAM_APP_HASH` `TELEGRAM_BOT_TOKEN`
+`TELEGRAM_APP_ID` `TELEGRAM_APP_HASH`
 
 After create [Telegram bot](https://core.telegram.org/bots#3-how-do-i-create-a-bot) and get `TELEGRAM_BOT_TOKEN`
 set it to [.env](./.env.dist).

@@ -77,7 +77,7 @@ func (clientStorage *ClientStorage) SendAndCatch(jsonQuery interface{}) (Update,
 	switch jsonQuery.(type) {
 	case string:
 		// unmarshal JSON into map, we don't have @extra field, if user don't set it
-		json.Unmarshal([]byte(jsonQuery.(string)), &update)
+		_ = json.Unmarshal([]byte(jsonQuery.(string)), &update)
 	case Update:
 		update = jsonQuery.(Update)
 	}
