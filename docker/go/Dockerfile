@@ -26,4 +26,10 @@ RUN mkdir /go
 ENV GOPATH="/go"
 ENV PATH="${PATH}:/usr/local/go/bin:${GOPATH}/bin"
 
+RUN curl -s https://packagecloud.io/install/repositories/golang-migrate/migrate/script.deb.sh | bash
+RUN apt-get install -y migrate
+
+RUN git clone https://github.com/go-delve/delve.git ${GOPATH}/src/github.com/go-delve/delve
+RUN cd ${GOPATH}/src/github.com/go-delve/delve && make install
+
 WORKDIR /app

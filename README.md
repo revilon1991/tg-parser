@@ -34,12 +34,32 @@ docker-compose exec go make install
 
 ### Usage
 ```bash
-./tg-parser
+./tg-parser [command]
 
 # or if installation with docker from source
-docker-compose exec go tg-parser
+docker-compose exec go go run cmd/tg-parser/main.go [command]
 ```
-You see updates from telegram from terminal.
-***
-Use browser for view information your bot [localhost:8080/v1/getMe](http://localhost:8080/v1/getMe)
- 
+##### Commands:
+```bash
+# API server
+# You can see updates telegram from terminal.
+./tg-parser run-server
+```
+```bash
+# Fetch members id from channels
+./tg-parser fetch-members
+```
+
+##### API end-points:
+* [/getMe](http://localhost:8080/v1/getMe) Information your bot
+* [/getChannelInfo](http://localhost:8080/v1/getChannelInfo?channel_id={id}) Information channel
+* [/getChannel](http://localhost:8080/v1/getChannel?channel_id={id}) Short information by channel id
+* [/getMembers](http://localhost:8080/v1/getMembers?channel_id={id}) Members by channel id
+* [/getUser](http://localhost:8080/v1/getUser?user_id={id}) Get user photo by photo id
+* [/getPhoto](http://localhost:8080/v1/getPhoto?photo_id={id}) Get user photo by photo id
+
+> INFO  
+> When you call end-point, api server must be running   
+> `channel_id` - get from database after invite bot to channel  
+> `photo_id` - get from `/getUser` end-point
+  

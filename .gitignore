@@ -3,4 +3,5 @@
 !/var/.gitkeep
 .env
 vendor/
-tg-parser*
+/tg-parser*
+/docker/.data

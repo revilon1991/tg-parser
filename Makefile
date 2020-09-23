@@ -17,6 +17,6 @@ build: clean
 	@chmod +x ./$(NAME)
 
 install:
-	@go install -ldflags "-X main.Version=$(VERSION) -X main.CommitID=$(COMMIT_ID)" ./cmd/...
+	@go install -ldflags "-X main.Version=$(VERSION) -X main.CommitID=$(COMMIT_ID) client.Version=$(VERSION)" ./cmd/...
 
 .PHONY: all clean build install
