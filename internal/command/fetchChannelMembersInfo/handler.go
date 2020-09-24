@@ -12,6 +12,8 @@ import (
 )
 
 func Handle(c *cli.Context) {
+	log.SetFlags(log.LstdFlags | log.Llongfile)
+
 	channelList := getChannelList()
 
 	for _, channel := range channelList {
@@ -27,7 +29,7 @@ func Handle(c *cli.Context) {
 			log.Fatal(err)
 		}
 
-		members, err := ioutil.ReadAll(res.Body)
+		responseMembers, err := ioutil.ReadAll(res.Body)
 
 		err = res.Body.Close()
 
@@ -35,10 +37,14 @@ func Handle(c *cli.Context) {
 			log.Fatal(err)
 		}
 
-		memberList := getMembers.MemberList{}
+		responseMemberList := getMembers.MemberList{}
 
-		_ = json.Unmarshal(members, &memberList)
+		_ = json.Unmarshal(responseMembers, &responseMemberList)
 
-		saveMembers(memberList)
+		saveMembers(responseMemberList)
+
+		memberList := getMemberIdList(responseMemberList)
+
+		saveRelationChannelMember(channel, memberList)
 	}
 }
