@@ -7,6 +7,7 @@ type User struct {
 	Username    string   `json:"username"`
 	PhoneNumber string   `json:"phone_number"`
 	Type        string   `json:"type"`
+	Bio         string   `json:"bio"`
 	PhotoList   []string `json:"photo_list"`
 }
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/revilon1991/tg-parser/internal/connection/mysql"
 	"github.com/revilon1991/tg-parser/internal/entity"
-	"github.com/revilon1991/tg-parser/internal/useCase/getMembers"
 	"log"
 	"strconv"
 	"strings"
@@ -69,7 +68,7 @@ func getChannelList() []*entity.Channel {
 	return channelList
 }
 
-func saveMembers(responseMemberList getMembers.MemberList) {
+func saveMembers(memberInfoList MemberInfoList) {
 	conn := mysql.Open()
 
 	defer mysql.Close(conn)
@@ -80,13 +79,32 @@ func saveMembers(responseMemberList getMembers.MemberList) {
 	var insertValues []string
 	var insertArgs []interface{}
 
-	for _, member := range responseMemberList.Members {
-		insertValues = append(insertValues, "(?, ?, ?)")
-		insertArgs = append(insertArgs, strconv.Itoa(member.UserId), nowString, nowString)
+	for _, member := range memberInfoList.MemberList {
+		insertValues = append(insertValues, "(?, ?, ?, ?, ?, ?, ?, ?, ?)")
+		insertArgs = append(
+			insertArgs,
+			strconv.Itoa(member.UserExternalId),
+			member.Username,
+			member.FirstName,
+			member.LastName,
+			member.PhoneNumber,
+			member.Type,
+			member.Bio,
+			nowString,
+			nowString,
+		)
 	}
 
-	query := fmt.Sprintf(
-		"insert ignore into Member (userId, createdAt, updatedAt) values %s",
+	query := fmt.Sprintf(`
+		insert into Member (userId, username, firstName, lastName, phoneNumber, type, bio, createdAt, updatedAt) values %s
+		on duplicate key update
+			username=values(username),
+			firstName=values(firstName),
+			lastName=values(lastName),
+			phoneNumber=values(phoneNumber),
+			type=values(type),
+			bio=values(bio)
+		`,
 		strings.Join(insertValues, ","),
 	)
 
@@ -97,7 +115,7 @@ func saveMembers(responseMemberList getMembers.MemberList) {
 	}
 }
 
-func getMemberIdList(responseMemberList getMembers.MemberList) []*entity.Member {
+func fetchMemberIdList(memberInfoList MemberInfoList) {
 	conn := mysql.Open()
 
 	defer mysql.Close(conn)
@@ -105,9 +123,9 @@ func getMemberIdList(responseMemberList getMembers.MemberList) []*entity.Member 
 	var sqlPlaceholders []string
 	var sqlArguments []interface{}
 
-	for _, member := range responseMemberList.Members {
+	for _, member := range memberInfoList.MemberList {
 		sqlPlaceholders = append(sqlPlaceholders, "?")
-		sqlArguments = append(sqlArguments, strconv.Itoa(member.UserId))
+		sqlArguments = append(sqlArguments, strconv.Itoa(member.UserExternalId))
 	}
 
 	queryPattern := `
@@ -134,26 +152,25 @@ func getMemberIdList(responseMemberList getMembers.MemberList) []*entity.Member 
 		}
 	}()
 
-	memberList := make([]*entity.Member, 0)
-
 	for rows.Next() {
-		member := new(entity.Member)
+		storedMember := new(entity.Member)
 		err := rows.Scan(
-			&member.Id,
-			&member.UserId,
+			&storedMember.Id,
+			&storedMember.UserId,
 		)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		memberList = append(memberList, member)
-	}
+		member := memberInfoList.MemberList[storedMember.UserId]
+		member.UserId = storedMember.Id
 
-	return memberList
+		memberInfoList.MemberList[storedMember.UserId] = member
+	}
 }
 
-func saveRelationChannelMember(channel *entity.Channel, memberList []*entity.Member) {
+func saveRelationChannelMember(memberInfoList MemberInfoList) {
 	conn := mysql.Open()
 
 	defer mysql.Close(conn)
@@ -168,7 +185,7 @@ func saveRelationChannelMember(channel *entity.Channel, memberList []*entity.Mem
 		delete from ChannelHasMember where channelId = ?
 	`
 
-	_, err = conn.Exec(queryDelete, channel.Id)
+	_, err = conn.Exec(queryDelete, memberInfoList.ChannelId)
 
 	if err != nil {
 		_, errRollback := conn.Exec(`rollback`)
@@ -186,19 +203,20 @@ func saveRelationChannelMember(channel *entity.Channel, memberList []*entity.Mem
 	now := time.Now()
 	nowString := now.Format("2006-01-02 15:04:05")
 
-	for _, member := range memberList {
-		sqlInsertPlaceholders = append(sqlInsertPlaceholders, "(?, ?, ?, ?)")
+	for _, member := range memberInfoList.MemberList {
+		sqlInsertPlaceholders = append(sqlInsertPlaceholders, "(?, ?, ?, ?, ?)")
 		sqlInsertArguments = append(
 			sqlInsertArguments,
-			strconv.Itoa(channel.Id),
-			strconv.Itoa(member.Id),
+			strconv.Itoa(memberInfoList.ChannelId),
+			strconv.Itoa(member.UserId),
+			member.JoinChannelDate,
 			nowString,
 			nowString,
 		)
 	}
 
 	queryInsert := fmt.Sprintf(
-		"insert into ChannelHasMember (channelId, memberId, createdAt, updatedAt) values %s",
+		"insert into ChannelHasMember (channelId, memberId, joinDate, createdAt, updatedAt) values %s",
 		strings.Join(sqlInsertPlaceholders, ","),
 	)
 

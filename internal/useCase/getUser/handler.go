@@ -18,12 +18,18 @@ func Handle(clientStorage *client.Storage, userId int32) User {
 
 	_ = json.Unmarshal(resUser.Raw, &responseUser)
 
+	resUserFull, _ := clientStorage.SendAndCatch(client.Request{
+		"@type":   "getUserFullInfo",
+		"user_id": userId,
+	})
+
 	user := User{
 		Id:          responseUser.Id,
 		FirstName:   responseUser.FirstName,
 		LastName:    responseUser.LastName,
 		Username:    responseUser.Username,
 		PhoneNumber: responseUser.PhoneNumber,
+		Bio:         resUserFull.ResponseData["bio"].(string),
 		Type:        responseUser.Type.Type,
 	}
 

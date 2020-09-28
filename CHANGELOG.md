@@ -1,6 +1,8 @@
 ## [UNRELEASED]
 ### Added
 - Added migration `000002_channel_has_member`
+- Added migration `000003_user_info`
+- Added store member info `username`, `firstName`, `lastName`, `phoneNumber`, `type`, `bio` when running `fetch-members` command.
 ### Changed
 - Now command `fetch-members` can store relation between channels and members
 - Refactoring tab to spaces
