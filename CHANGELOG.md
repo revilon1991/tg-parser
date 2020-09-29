@@ -1,11 +1,13 @@
 ## [UNRELEASED]
 ### Added
-- Added migration `000002_channel_has_member`
-- Added migration `000003_user_info`
+- Added migration `000002_channel_has_member`.
+- Added migration `000003_user_info`.
 - Added store member info `username`, `firstName`, `lastName`, `phoneNumber`, `type`, `bio` when running `fetch-members` command.
+- Added end-point `/proxy` for full proxy request to tdlib.
 ### Changed
 - Now command `fetch-members` can store relation between channels and members
 - Refactoring tab to spaces
+- Response end-point `/v1/getUser`. New keys for `photo_list` remote uniq id and remote id for.
 
 ## [1.0.0] - 2020-09-25
 ### Added

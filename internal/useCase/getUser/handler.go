@@ -44,11 +44,16 @@ func Handle(clientStorage *client.Storage, userId int32) User {
 
 	for _, photo := range responsePhotos.PhotoList {
 		photoSizes := photo.Sizes
-		photoId := photoSizes[len(photoSizes)-1].Photo.Id
+		photoMaxSize := photoSizes[len(photoSizes)-1].Photo
+		photoLocalId := photoMaxSize.Id
 
-		photoUrl := fmt.Sprintf(config.Routing.V1GetPhoto+"?photo_id=%d", photoId)
+		photoUrl := fmt.Sprintf(config.Routing.V1GetPhoto+"?photo_id=%d", photoLocalId)
 
-		user.PhotoList = append(user.PhotoList, photoUrl)
+		user.PhotoList = append(user.PhotoList, Photo{
+			Id:       photoMaxSize.Remote.Id,
+			UniqueId: photoMaxSize.Remote.UniqueId,
+			Link:     photoUrl,
+		})
 	}
 
 	return user

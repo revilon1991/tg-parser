@@ -11,6 +11,7 @@ import (
 	"github.com/revilon1991/tg-parser/internal/useCase/getPhoto"
 	"github.com/revilon1991/tg-parser/internal/useCase/getUser"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -145,6 +146,34 @@ func GetChannelAction(clientStorage *client.Storage) {
 		result := getChannel.Handle(clientStorage, channelId)
 
 		js, err := json.Marshal(result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(js)
+	})
+}
+
+func Proxy(clientStorage *client.Storage) {
+	http.HandleFunc("/proxy", func(w http.ResponseWriter, r *http.Request) {
+		body, err := ioutil.ReadAll(r.Body)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		res, err := clientStorage.SendAndCatch(string(body[:]))
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		js, err := json.Marshal(res.ResponseData)
+
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

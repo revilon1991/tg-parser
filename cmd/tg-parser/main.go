@@ -59,6 +59,7 @@ func api(c *cli.Context) {
 	controller.GetPhotoAction(clientStorage)
 	controller.GetChannelInfoAction(clientStorage)
 	controller.GetChannelAction(clientStorage)
+	controller.Proxy(clientStorage)
 
 	err := http.ListenAndServe(":"+client.Port, nil)
 

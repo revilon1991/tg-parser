@@ -1,14 +1,20 @@
 package getUser
 
 type User struct {
-	Id          int32    `json:"id"`
-	FirstName   string   `json:"first_name"`
-	LastName    string   `json:"last_name"`
-	Username    string   `json:"username"`
-	PhoneNumber string   `json:"phone_number"`
-	Type        string   `json:"type"`
-	Bio         string   `json:"bio"`
-	PhotoList   []string `json:"photo_list"`
+	Id          int32   `json:"id"`
+	FirstName   string  `json:"first_name"`
+	LastName    string  `json:"last_name"`
+	Username    string  `json:"username"`
+	PhoneNumber string  `json:"phone_number"`
+	Type        string  `json:"type"`
+	Bio         string  `json:"bio"`
+	PhotoList   []Photo `json:"photo_list"`
+}
+
+type Photo struct {
+	Id       string `json:"id"`
+	UniqueId string `json:"uniq_id"`
+	Link     string `json:"link"`
 }
 
 type ResponseUser struct {
@@ -35,14 +41,21 @@ type ResponsePhotos struct {
 				Id           int32 `json:"id"`
 				ExpectedSize int32 `json:"expected_size"`
 				Size         int32 `json:"size"`
-				Remote       map[string]struct {
+				Remote       struct {
+					Type                 string `json:"@type"`
 					Id                   string `json:"id"`
 					UniqueId             string `json:"unique_id"`
 					IsUploadingActive    bool   `json:"is_uploading_active"`
 					IsUploadingCompleted bool   `json:"is_uploading_completed"`
 					UploadedSize         bool   `json:"uploaded_size"`
-				}
-			}
-		}
+				} `json:"remote"`
+				Local struct {
+					Type            string `json:"@type"`
+					CanBeDownloaded bool   `json:"can_be_downloaded"`
+					CanBeDeleted    bool   `json:"can_be_deleted"`
+					Path            string `json:"path"`
+				} `json:"local"`
+			} `json:"photo"`
+		} `json:"sizes"`
 	} `json:"photos"`
 }
