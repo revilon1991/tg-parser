@@ -1,9 +1,13 @@
 ## [UNRELEASED]
+
+## [1.1.0] - 2020-10-05
 ### Added
 - Added migration `000002_channel_has_member`.
 - Added migration `000003_user_info`.
 - Added store member info `username`, `firstName`, `lastName`, `phoneNumber`, `type`, `bio` when running `fetch-members` command.
 - Added end-point `/proxy` for full proxy request to tdlib.
+- Added migration `000004_user_photo`.
+- Now member photo links store to database.
 ### Changed
 - Now command `fetch-members` can store relation between channels and members
 - Refactoring tab to spaces
