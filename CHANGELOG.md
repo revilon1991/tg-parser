@@ -1,4 +1,6 @@
 ## [UNRELEASED]
+### Added
+- Added end-point `/v1/storage/getChannelList`
 
 ## [1.1.0] - 2020-10-05
 ### Added
