@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func Handle() ChannelList {
+func Handle() ResponseChannelList {
 	conn := mysql.Open()
 
 	defer mysql.Close(conn)
@@ -16,16 +16,15 @@ func Handle() ChannelList {
 		log.Fatal(err)
 	}
 
-	var responseChannelList ChannelList
+	var responseChannelList ResponseChannelList
 
 	for _, channel := range channelList {
-		responseChannelList = append(responseChannelList, Channel{
+		responseChannelList = append(responseChannelList, ResponseChannel{
 			Id:          channel.Id,
-			ChannelId:   channel.ChannelId,
+			OuterId:     channel.ChannelId,
 			Username:    channel.Username.String,
 			Description: channel.Description.String,
 			MemberCount: channel.MemberCount,
-			CreatedAt:   channel.CreatedAt,
 			UpdatedAt:   channel.UpdatedAt,
 		})
 	}

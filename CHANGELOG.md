@@ -1,6 +1,7 @@
 ## [UNRELEASED]
 ### Added
 - Added end-point `/v1/storage/getChannelList`
+- Added end-point `/v1/storage/getMemberList`
 
 ## [1.1.0] - 2020-10-05
 ### Added

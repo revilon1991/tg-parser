@@ -9,6 +9,7 @@ var Routing = RoutingStruct{
 	V1GetChannel:     "/v1/getChannel",
 
 	V1StorageGetChannelList: "/v1/storage/getChannelList",
+	V1StorageGetMemberList:  "/v1/storage/getMemberList",
 }
 
 type RoutingStruct struct {
@@ -20,4 +21,5 @@ type RoutingStruct struct {
 	V1GetChannel     string
 
 	V1StorageGetChannelList string
+	V1StorageGetMemberList  string
 }

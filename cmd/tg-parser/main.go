@@ -62,6 +62,7 @@ func api(c *cli.Context) {
 	controller.Proxy(clientStorage)
 
 	controller.GetStorageChannelList()
+	controller.GetStorageMemberList()
 
 	err := http.ListenAndServe(":"+client.Port, nil)
 
