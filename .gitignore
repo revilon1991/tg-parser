@@ -5,3 +5,4 @@
 vendor/
 /tg-parser*
 /docker/.data
+__debug_bin
